@@ -19,13 +19,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <version.quarkus.github-app>1.4.1</version.quarkus.github-app>
-    <version.quarkus>2.5.1.Final</version.quarkus>
-    <version.compiler-plugin>3.8.1</version.compiler-plugin>
+    <version.quarkus.github-app>1.7.1</version.quarkus.github-app>
+    <version.quarkus>2.7.3.Final</version.quarkus>
+    <version.assertj>3.22.0</version.assertj>
+
+    <version.compiler-plugin>3.10.0</version.compiler-plugin>
     <version.surefire-plugin>3.0.0-M5</version.surefire-plugin>
-    <version.code.formatter>2.15.0</version.code.formatter>
-    <version.impsort>1.6.2</version.impsort>
-    <version.assertj>3.21.0</version.assertj>
+    <version.formatter.maven.plugin>2.18.0</version.formatter.maven.plugin>
+    <version.impsort.maven.plugin>1.6.2</version.impsort.maven.plugin>
+    <version.resources.maven.plugin>3.2.0</version.resources.maven.plugin>
 
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
@@ -94,7 +96,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>${version.resources.maven.plugin}</version>
         <executions>
           <execution>
             <id>jib-copy-env-file</id>
@@ -119,7 +121,7 @@
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
-        <version>2.17.0</version>
+        <version>${version.formatter.maven.plugin}</version>
         <executions>
           <execution>
             <phase>process-sources</phase>
@@ -135,7 +137,7 @@
       <plugin>
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
-        <version>1.6.2</version>
+        <version>${version.impsort.maven.plugin}</version>
         <configuration>
           <removeUnused>true</removeUnused>
           <groups>java.,javax.,org.,com.,io.</groups>
