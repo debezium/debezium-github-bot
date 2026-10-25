@@ -37,12 +37,6 @@ public class PullRequestContributionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PullRequestContributionHandler.class);
 
-    private static final String COMMENT_INTRO_PASSED = "Thanks for your pull request!\n\n"
-            + "This pull request appears to follow the contribution rules. :+1:\n";
-    private static final String COMMENT_INTRO_FAILED = "Thanks for your pull request!\n\n"
-            + "This pull request does not follow the contribution rules. Could you please review?\n";
-    private static final String COMMENT_FOOTER = "\n\n---\n\n:robot: This is an auto-generated message.";
-
     @Inject
     DeploymentConfig deploymentConfig;
 
@@ -73,26 +67,38 @@ public class PullRequestContributionHandler {
             return;
         }
 
+        final StringBuilder rulesOutput = new StringBuilder();
+        outputs.forEach(output -> output.appendFailingRules(rulesOutput));
+
         // Generate the comment text
-        StringBuilder message = new StringBuilder(passed ? COMMENT_INTRO_PASSED : COMMENT_INTRO_FAILED);
-        outputs.forEach(output -> output.appendFailingRules(message));
-        message.append(COMMENT_FOOTER);
+        StringBuilder message = new StringBuilder(passed ? getPassPreamble() : getFailPreamble());
+        message.append(rulesOutput);
+        message.append(deploymentConfig.getFooter());
 
         // Find the comment that should be modified by the bot; may be null if none exist.
         GHIssueComment existingComment = findExistingComment(pullRequest);
         if (!deploymentConfig.isDryRun()) {
             if (existingComment == null) {
+                if (rulesOutput.length() == 0) {
+                    LOGGER.info("Rules generated no output, adding no message.");
+                    return;
+                }
                 // No comment found, add a new comment with the message
                 pullRequest.comment(message.toString());
             }
             else {
                 // Existing comment detected, update the contents
+                if (rulesOutput.length() == 0) {
+                    LOGGER.info("Rules generated no output, removing existing comment.");
+                    existingComment.delete();
+                    return;
+                }
                 existingComment.update(message.toString());
             }
         }
         else {
             // In dry-mode run; while contents to the log instead
-            LOGGER.info("PR #{} - Added comment {}", pullRequest.getNumber(), message.toString());
+            LOGGER.info("PR #{} - Added comment {}", pullRequest.getNumber(), message);
         }
     }
 
@@ -156,5 +162,13 @@ public class PullRequestContributionHandler {
             }
         }
         return null;
+    }
+
+    private String getPassPreamble() {
+        return deploymentConfig.getPassPreamble();
+    }
+
+    private String getFailPreamble() {
+        return deploymentConfig.getFailPreamble();
     }
 }

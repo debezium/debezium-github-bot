@@ -26,4 +26,22 @@ public interface DeploymentConfig {
 
     @WithName("issue-key-pattern")
     String getIssueKeyPattern();
+
+    @WithName("check-always-add-issues")
+    boolean isCheckAlwaysAddIssuesEnabled();
+
+    @WithName("check-commit-start-with-key")
+    boolean isCheckCommitStartWithKeyEnabled();
+
+    @WithName("check-issues-not-mentioned")
+    boolean isCheckIssuesNotMentionedEnabled();
+
+    @WithName("intro-pass")
+    String getPassPreamble();
+
+    @WithName("intro-fail")
+    String getFailPreamble();
+
+    @WithName("footer")
+    String getFooter();
 }
